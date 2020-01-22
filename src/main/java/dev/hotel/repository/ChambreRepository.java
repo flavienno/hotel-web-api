@@ -8,5 +8,5 @@ import dev.hotel.entite.Chambre;
 
 public interface ChambreRepository extends JpaRepository<Chambre, Integer> {
 
-	//List<Chambre> findBynomDeChambre(String nom);
+	//List<Chambre> findBynumero(String numero);
 }
