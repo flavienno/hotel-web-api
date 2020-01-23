@@ -47,7 +47,7 @@ public class ClientController {
 	// Si un client possédant le même nom et les mêmes prénoms existe,
 	// retourner une erreur 400 avec un message d’erreur
 	@RequestMapping(method = RequestMethod.POST)
-	public ResponseEntity<String> post(@RequestBody Client nvclient) {
+	public ResponseEntity<String> postClient(@RequestBody Client nvclient) {
 
 		if (clientRepository.existsByNomAndPrenoms(nvclient.getNom(), nvclient.getPrenoms()) == false) {
 			clientRepository.save(nvclient);

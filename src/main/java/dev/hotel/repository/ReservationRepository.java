@@ -4,8 +4,8 @@ import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import dev.hotel.entite.Chambre;
+import dev.hotel.entite.Reservation;
 
-public interface ChambreRepository extends JpaRepository<Chambre, UUID> {
+public interface ReservationRepository extends JpaRepository<Reservation, UUID> {
 
 }
