@@ -2,12 +2,17 @@ package dev.hotel.entite;
 
 
 import javax.persistence.Entity;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 
 @Entity
 public class Hotel extends BaseEntite {
 
+	@NotEmpty
     private String nom;
+	
+	@NotNull
     private Integer nombreEtoiles;
 
     public Hotel() {

@@ -5,12 +5,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import javax.validation.constraints.Future;
+import javax.validation.constraints.NotNull;
+
 public class ReservationNvl extends BaseEntite {
 
+	@Future
+	@NotNull
 	private LocalDate dateDebut;
+	@Future
+	@NotNull
 	private LocalDate dateFin;
+	@NotNull
 	private UUID clientId;
-	private List<UUID> chambres = new ArrayList<>();
+
+	private List<@NotNull UUID> chambres = new ArrayList<>();
 
 	/**
 	 * Getter
@@ -66,7 +75,6 @@ public class ReservationNvl extends BaseEntite {
 		this.clientId = clientId;
 	}
 
-	
 	/**
 	 * @param dateDebut
 	 * @param dateFin
@@ -81,14 +89,18 @@ public class ReservationNvl extends BaseEntite {
 		this.chambres = chambres;
 	}
 
-	/** Getter
+	/**
+	 * Getter
+	 * 
 	 * @return the chambres
 	 */
 	public List<UUID> getChambres() {
 		return chambres;
 	}
 
-	/** Setter
+	/**
+	 * Setter
+	 * 
 	 * @param chambres the chambres to set
 	 */
 	public void setChambres(List<UUID> chambres) {

@@ -1,63 +1,67 @@
 package dev.hotel.controller;
 
 import java.util.List;
+import java.util.UUID;
+
+import javax.persistence.EntityExistsException;
+import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import ch.qos.logback.core.joran.conditional.IfAction;
 import dev.hotel.entite.Client;
-import dev.hotel.repository.ClientRepository;
+
+import dev.hotel.service.ClientService;
 
 @RestController
-@RequestMapping("/clients")
+@RequestMapping("clients")
 public class ClientController {
 
-	private ClientRepository clientRepository;
+	private ClientService clientService;
 
-	/**
-	 * @param clientRepository
-	 */
-	public ClientController(ClientRepository clientRepository) {
+	public ClientController(ClientService clientService) {
 		super();
-		this.clientRepository = clientRepository;
+		this.clientService = clientService;
 	}
 
 	// GET /clients : retourne la liste des clients de la base de données au format
 	// JSON.
-	@RequestMapping(method = RequestMethod.GET)
-	public List<Client> retourClients() {
-		List<Client> listClients = clientRepository.findAll();
-		return listClients;
+	@GetMapping
+	public List<Client> listerClients() {
+		return this.clientService.listerClients();
 	}
 
 	// GET /clients?nom=XXX : retourne un tableau de clients dont le nom est précisé
-	@RequestMapping(method = RequestMethod.GET, params = "nom")
-	public Client[] rechercheParNom(@RequestParam("nom") String nomRequeteHttp) {
-		return clientRepository.findByNom(nomRequeteHttp);
+	@GetMapping(params = "nom")
+	public List<Client> rechercherParNom(@RequestParam("nom") String nomRequete) {
+		return this.clientService.findByNom(nomRequete);
 	}
 
 	// POST /clients : avec un objet Client au format JSON dans le corps de la
 	// requête,insère un nouveau client dans l’application.
 	// Si un client possédant le même nom et les mêmes prénoms existe,
 	// retourner une erreur 400 avec un message d’erreur
-	@RequestMapping(method = RequestMethod.POST)
-	public ResponseEntity<String> postClient(@RequestBody Client nvclient) {
+	@PostMapping
+	public UUID creerClient(@RequestBody @Valid Client clientRecu) {
+		return this.clientService.creerClient(clientRecu);
+	}
 
-		if (clientRepository.existsByNomAndPrenoms(nvclient.getNom(), nvclient.getPrenoms()) == false) {
-			clientRepository.save(nvclient);
-			return ResponseEntity.status(HttpStatus.OK).body("Le client à bien été inséré");
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	public ResponseEntity<?> validationException(MethodArgumentNotValidException ex) {
+		return ResponseEntity.badRequest().body(ex.getMessage());
+	}
 
-		} else {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Le client existe déjà");
-
-		}
-
+	@ExceptionHandler(value = { EntityExistsException.class })
+	public ResponseEntity<String> ClientPresent(EntityExistsException exception) {
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("client déja en bdd");
 	}
 
 }

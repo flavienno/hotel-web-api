@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
+import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Type;
 
@@ -12,6 +13,7 @@ public class BaseEntite {
 
 	@Id
 	@Type(type="uuid-char")
+	@NotNull
     private UUID uuid;
 
     public BaseEntite() {
